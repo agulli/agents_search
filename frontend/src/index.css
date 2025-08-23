@@ -1,0 +1,107 @@
+/* frontend/src/index.css */
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  padding: 2rem;
+  text-align: center;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+header {
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filters input, .filters select {
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background-color: #1a1a1a;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+.search-input {
+  min-width: 300px;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  text-align: left;
+}
+
+.agent-card {
+  background-color: #1a1a1a;
+  border: 1px solid #535bf24d;
+  border-radius: 8px;
+  padding: 1.5rem;
+  transition: border-color 0.2s;
+}
+
+.agent-card:hover {
+  border-color: #535bf2;
+}
+
+.agent-card h3 a {
+  color: #a3a6ff;
+  text-decoration: none;
+}
+.agent-card h3 a:hover {
+  text-decoration: underline;
+}
+
+.source-type {
+  font-style: italic;
+  color: #888;
+  margin-top: -10px;
+  margin-bottom: 15px;
+}
+
+.categories {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.category-tag {
+  background-color: #535bf233;
+  color: #c7c8ff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.8em;
+}

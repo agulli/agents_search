@@ -1,0 +1,24 @@
+# Dependencies
+/backend/node_modules
+/frontend/node_modules
+
+# Local Database File (auto-generated)
+/backend/ai_agents.db
+/backend/ai_agents.db-journal
+
+# Frontend Build Output
+/frontend/dist
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment Variables (important for security)
+.env
+.env.local
+.env.*.local
+
+# Operating System files
+.DS_Store
+Thumbs.db
