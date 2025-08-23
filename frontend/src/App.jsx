@@ -1,23 +1,48 @@
 // frontend/src/App.jsx
+// In frontend/src/App.jsx
+
 import React, { useState, useEffect, useMemo } from 'react';
 
 const API_URL = 'http://localhost:3001/api/agents';
 
 // A single card component for an agent
 function AgentCard({ agent }) {
+  // Placeholder function for the deploy button
+  const handleDeployClick = () => {
+    alert(`Deployment for "${agent.name}" would be initiated here.`);
+  };
+
   return (
     <div className="agent-card">
-      <h3>
-        <a href={agent.url} target="_blank" rel="noopener noreferrer">
-          {agent.name}
-        </a>
-      </h3>
-      <p className="source-type">{agent.source_type}</p>
-      <p>{agent.description}</p>
-      <div className="categories">
-        {agent.category.map((cat, index) => (
-          <span key={index} className="category-tag">{cat}</span>
-        ))}
+      <div>
+        <h3>
+          <a href={agent.url} target="_blank" rel="noopener noreferrer">
+            {agent.name}
+          </a>
+        </h3>
+        <p className="source-type">{agent.source_type}</p>
+        
+        {agent.stars !== null && (
+          <div className="agent-stats">
+            <span>⭐ {agent.stars.toLocaleString()}</span>
+            <span>🍴 {agent.forks.toLocaleString()}</span>
+          </div>
+        )}
+
+        <p>{agent.description}</p>
+      </div>
+      <div className="card-footer">
+        <div className="categories">
+          {agent.category.map((cat, index) => (
+            <span key={index} className="category-tag">{cat}</span>
+          ))}
+        </div>
+        
+        {agent.source_type === 'Open-source' && (
+          <button className="deploy-button" onClick={handleDeployClick}>
+            🚀 Deploy to GCP
+          </button>
+        )}
       </div>
     </div>
   );
@@ -31,14 +56,21 @@ function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSourceType, setSelectedSourceType] = useState('');
+  
+  // NEW: State for sorting
+  const [sortByStars, setSortByStars] = useState(false);
 
   // Fetch all data initially to populate categories
   useEffect(() => {
     fetch(API_URL)
       .then(res => res.json())
       .then(data => {
-        const uniqueCategories = [...new Set(data.flatMap(agent => agent.category))];
-        setAllCategories(uniqueCategories.sort());
+        if (Array.isArray(data)) {
+          const uniqueCategories = [...new Set(data.flatMap(agent => agent.category))];
+          setAllCategories(uniqueCategories.sort());
+        } else {
+          console.error("Initial data fetch did not return an array:", data);
+        }
       })
       .catch(error => console.error('Error fetching initial data:', error));
   }, []);
@@ -52,9 +84,34 @@ function App() {
 
     fetch(`${API_URL}?${queryParams.toString()}`)
       .then(res => res.json())
-      .then(data => setAgents(data))
-      .catch(error => console.error('Error fetching agents:', error));
+      .then(data => {
+        if (Array.isArray(data)) {
+          setAgents(data);
+        } else {
+          console.error("Filtered data fetch did not return an array:", data);
+          setAgents([]);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching agents:', error)
+        setAgents([]);
+      });
   }, [searchTerm, selectedCategory, selectedSourceType]);
+
+  // NEW: Memoized sorting logic
+  const sortedAgents = useMemo(() => {
+    const sortableAgents = [...agents]; // Create a copy to avoid mutating state
+    if (sortByStars) {
+      // Sort by stars descending (most stars first)
+      // `b.stars - a.stars` handles nulls by treating them as 0
+      sortableAgents.sort((a, b) => (b.stars || 0) - (a.stars || 0));
+    } else {
+      // Sort by name alphabetically
+      sortableAgents.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    return sortableAgents;
+  }, [agents, sortByStars]);
+
 
   return (
     <div className="app-container">
@@ -82,13 +139,25 @@ function App() {
           <option value="Open-source">Open-source</option>
           <option value="Closed-source">Closed-source</option>
         </select>
+        
+        {/* NEW: Checkbox for sorting */}
+        <div className="checkbox-container">
+          <input 
+            type="checkbox" 
+            id="usage-rank" 
+            checked={sortByStars}
+            onChange={(e) => setSortByStars(e.target.checked)}
+          />
+          <label htmlFor="usage-rank">Usage Rank</label>
+        </div>
       </div>
 
       <div className="results-grid">
-        {agents.length > 0 ? (
-          agents.map(agent => <AgentCard key={agent.id} agent={agent} />)
+        {/* UPDATED: We now map over sortedAgents instead of agents */}
+        {sortedAgents.length > 0 ? (
+          sortedAgents.map(agent => <AgentCard key={agent.id} agent={agent} />)
         ) : (
-          <p>No agents found matching your criteria.</p>
+          <p>Loading agents or none found matching your criteria...</p>
         )}
       </div>
     </div>
