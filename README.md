@@ -7,7 +7,7 @@ A full-stack web application to browse, search, and filter a curated database of
 
 ## ✨ Features
 
--   **Comprehensive Database**: Contains over 200 entries, including both open-source and closed-source projects.
+-   **Comprehensive Database**: Contains over 1600 entries, including both open-source and closed-source projects.
 -   **Full-Text Search**: Instantly find agents by name or description.
 -   **Dynamic Filtering**:
     -   Filter by `source type` (Open-source vs. Closed-source).
